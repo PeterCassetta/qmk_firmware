@@ -8,18 +8,18 @@
 
 enum keymap_layout {
     VANILLA = 0,  // matches MF68 layout
-    FUNC,         // 0x02
-    WINLOCK,      // 0x04 Function in CapsLock location, gui/alt swapped for OSX
-    SETTINGS,     // 0x06
+    WINLOCK,      // 0x02 Windows key disabled
+    FUNC,         // 0x04
+    SETTINGS,     // 0x08
 };
 
 // Colors of the layer indicator LED
 // This list needs to define layer 0xFFFFFFFF, it is the end of the list, and the unknown layer
 const Layer_Info layer_info[] = {
     // Layer     Mask           Red     Green   Blue
-    {0x00000000, 0xFFFFFFFF, {0x00, 0xFF, 0x00}}, // base layers - green
-    {0x00000002, 0xFFFFFFFE, {0x00, 0x00, 0xFF}}, // function layer - blue
-    {0x00000004, 0xFFFFFFFC, {0xFF, 0x5F, 0x00}}, // winlock layer - orange
+    {0x00000000, 0xFFFFFFFF, {0xFF, 0x00, 0x00}}, // base layer - green
+    {0x00000002, 0xFFFFFFFE, {0xFF, 0x1F, 0x00}}, // winlock layer - orange
+    {0x00000004, 0xFFFFFFFC, {0xFF, 0x6F, 0x00}}, // function layer - yellow
     {0x00000008, 0xFFFFFFE8, {0xFF, 0x00, 0xFF}}, // settings layer - magenta
     {0xFFFFFFFF, 0xFFFFFFFF, {0xFF, 0xFF, 0xFF}}, // unknown layer - REQUIRED - white
 };
@@ -49,29 +49,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_LSFT, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_RSFT, KC_UP, \
     KC_LCTL, KC_LGUI, KC_LALT, KC_SPC, KC_RALT, MO(FUNC), KC_APP, KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT),
 
-[FUNC] = KEYMAP(
-    /* Keymap FUNCTION: Function Layer
-    * ,-------------------------------------------------------------.  ,--------------.
-    * |     |  |   |   |   |  |   |   |   |   |   |   |   |   |     |  |Mute| V- | V+ |
-    * |-------------------------------------------------------------|  |--------------|
-    * |   |   |   |   |   |   |   |   |   |   |   |   |   |         |  |Prev|Play|Next|
-    * |-------------------------------------------------------------|  |--------------|
-    * |     |   |   |   |   |   |   |   |   |   |   |   |   |       |  |    |    |    |
-    * |-------------------------------------------------------------|  `--------------'
-    * |       |   |   |   |   |   |   |   |   |   |   |   |         |
-    * |-------------------------------------------------------------|       ,----.
-    * |        |   |   |   |   |   |   |    |   |   |  |TG(SETTINGS)|       |    |
-    * |-------------------------------------------------------------'  ,--------------.
-    * |    |    |    |                             |    |     |     |  |    |    |    |
-    * `-------------------------------------------------------------'  `--------------'
-    */
-    KC_TR,   KC_TR, KC_TR, KC_TR, KC_TR,    KC_TR, KC_TR, KC_TR, KC_TR,    KC_TR, KC_TR, KC_TR, KC_TR,  KC_MUTE, KC_VOLD, KC_VOLU, \
-    KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,  KC_TR,  KC_MPRV, KC_MPLY, KC_MNXT, \
-    KC_TR,  KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_UP, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,  KC_TR,   KC_TR,   KC_TR, \
-    KC_TR,   KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,       KC_TR, \
-    KC_TR,    KC_TR,  KC_TR,  KC_TR,  KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,   TG(SETTINGS),           KC_TR, \
-    KC_TR, TO(WINLOCK), KC_TR,              KC_TR,                         KC_TR, KC_TR, KC_TR, KC_TR,  KC_TR,   KC_TR,   KC_TR),
-
 [WINLOCK] = KEYMAP(
     /* Keymap WINLOCK: Windows-Key-Disabled Layer
     * ,-------------------------------------------------------------.  ,--------------.
@@ -94,6 +71,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TR,   KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,       KC_TR, \
     KC_TR,    KC_TR,  KC_TR,  KC_TR,  KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,          KC_TR,           KC_TR, \
     KC_TR, KC_NO, KC_TR,                    KC_TR,                         KC_TR, KC_TR, KC_TR, KC_TR,  KC_TR,   KC_TR,   KC_TR),
+
+[FUNC] = KEYMAP(
+        /* Keymap FUNCTION: Function Layer
+        * ,-------------------------------------------------------------.  ,--------------.
+        * |     |  |   |   |   |  |   |   |   |   |   |   |   |   |     |  |    |    |    |
+        * |-------------------------------------------------------------|  |--------------|
+        * |   |   |   |   |   |   |   |   |   |   |   |   |   |         |  |Prev|Play|Next|
+        * |-------------------------------------------------------------|  |--------------|
+        * |     |   |   |   |   |   |   |   |   |   |   |   |   |       |  |Mute| V- | V+ |
+        * |-------------------------------------------------------------|  `--------------'
+        * |       |   |   |   |   |   |   |   |   |   |   |   |         |
+        * |-------------------------------------------------------------|       ,----.
+        * |        |   |   |   |   |   |   |    |   |   |  |TG(SETTINGS)|       |    |
+        * |-------------------------------------------------------------'  ,--------------.
+        * |    |    |    |                             |    |     |     |  |    |    |    |
+        * `-------------------------------------------------------------'  `--------------'
+        */
+        KC_TR,   KC_TR, KC_TR, KC_TR, KC_TR,    KC_TR, KC_TR, KC_TR, KC_TR,    KC_TR, KC_TR, KC_TR, KC_TR,  KC_TR,   KC_TR,   KC_TR, \
+    KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,  KC_TR,  KC_MPRV, KC_MPLY, KC_MNXT, \
+    KC_TR,  KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_UP, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,  KC_MUTE, KC_VOLD, KC_VOLU, \
+    KC_TR,   KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,       KC_TR, \
+    KC_TR,    KC_TR,  KC_TR,  KC_TR,  KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR, KC_TR,   TG(SETTINGS),           KC_TR, \
+    KC_TR, TG(WINLOCK), KC_TR,              KC_TR,                         KC_TR, KC_TR, KC_TR, KC_TR,  KC_TR,   KC_TR,   KC_TR),
 
 [SETTINGS] = KEYMAP(
     /* Keymap SETTINGS: Settings Layer

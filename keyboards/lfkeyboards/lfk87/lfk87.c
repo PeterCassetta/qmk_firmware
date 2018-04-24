@@ -178,7 +178,7 @@ void led_set_kb(uint8_t usb_led)
 {
     // Set capslock LED to Blue
     if (usb_led & (1 << USB_LED_CAPS_LOCK)) {
-        set_rgb(31, 0x00, 0x00, 0x7F);
+        set_rgb(31, 0xFF, 0x00, 0x00);
     }else{
         set_rgb(31, 0x00, 0x00, 0x00);
     }
