@@ -176,9 +176,9 @@ void reset_keyboard_kb(){
 
 void led_set_kb(uint8_t usb_led)
 {
-    // Set capslock LED to Blue
+    // Set capslock LED to pink
     if (usb_led & (1 << USB_LED_CAPS_LOCK)) {
-        set_rgb(31, 0xFF, 0x00, 0x00);
+        set_rgb(31, 0xCD, 0x66, 0x66);
     }else{
         set_rgb(31, 0x00, 0x00, 0x00);
     }
