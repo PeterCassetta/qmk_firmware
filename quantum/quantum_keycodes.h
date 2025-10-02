@@ -51,16 +51,18 @@ enum quantum_keycodes {
     QK_MACRO_MAX          = 0x3FFF,
     QK_LAYER_TAP          = 0x4000,
     QK_LAYER_TAP_MAX      = 0x4FFF,
-    QK_TO                 = 0x5000,
-    QK_TO_MAX             = 0x50FF,
-    QK_MOMENTARY          = 0x5100,
-    QK_MOMENTARY_MAX      = 0x51FF,
-    QK_DEF_LAYER          = 0x5200,
-    QK_DEF_LAYER_MAX      = 0x52FF,
-    QK_TOGGLE_LAYER       = 0x5300,
-    QK_TOGGLE_LAYER_MAX   = 0x53FF,
-    QK_ONE_SHOT_LAYER     = 0x5400,
-    QK_ONE_SHOT_LAYER_MAX = 0x54FF,
+    QK_LAYER_MOD          = 0x5000,
+    QK_LAYER_MOD_MAX      = 0x51FF,
+    QK_TO                 = 0x5200,
+    QK_TO_MAX             = 0x521F,
+    QK_MOMENTARY          = 0x5220,
+    QK_MOMENTARY_MAX      = 0x523F,
+    QK_DEF_LAYER          = 0x5240,
+    QK_DEF_LAYER_MAX      = 0x525F,
+    QK_TOGGLE_LAYER       = 0x5260,
+    QK_TOGGLE_LAYER_MAX   = 0x527F,
+    QK_ONE_SHOT_LAYER     = 0x5280,
+    QK_ONE_SHOT_LAYER_MAX = 0x529F,
     QK_ONE_SHOT_MOD       = 0x5500,
     QK_ONE_SHOT_MOD_MAX   = 0x55FF,
 #ifndef DISABLE_CHORDING
@@ -71,8 +73,6 @@ enum quantum_keycodes {
     QK_TAP_DANCE_MAX      = 0x57FF,
     QK_LAYER_TAP_TOGGLE   = 0x5800,
     QK_LAYER_TAP_TOGGLE_MAX = 0x58FF,
-    QK_LAYER_MOD          = 0x5900,
-    QK_LAYER_MOD_MAX      = 0x59FF,
 #ifdef STENO_ENABLE
     QK_STENO              = 0x5A00,
     QK_STENO_BOLT         = 0x5A30,
@@ -83,6 +83,7 @@ enum quantum_keycodes {
     QK_SWAP_HANDS         = 0x5B00,
     QK_SWAP_HANDS_MAX     = 0x5BFF,
 #endif
+    // 0x5C00 - 0x5FFF are reserved, see below
     QK_MOD_TAP            = 0x6000,
     QK_MOD_TAP_MAX        = 0x7FFF,
 #if defined(UNICODEMAP_ENABLE) && defined(UNICODE_ENABLE)
@@ -577,30 +578,30 @@ enum quantum_keycodes {
 #define AG_SWAP MAGIC_SWAP_ALT_GUI
 #define AG_NORM MAGIC_UNSWAP_ALT_GUI
 
-// GOTO layer - 16 layers max
-// when:
-// ON_PRESS    = 1
-// ON_RELEASE  = 2
-// Unless you have a good reason not to do so, prefer  ON_PRESS (1) as your default.
-// In fact, we changed it to assume ON_PRESS for sanity/simplicity. If needed, you can add your own
-// keycode modeled after the old version, kept below for this.
-/* #define TO(layer, when) (layer | QK_TO | (when << 0x4)) */
-#define TO(layer) (layer | QK_TO | (ON_PRESS << 0x4))
+// GOTO layer - 32 layer max
+#define TO(layer) (QK_TO | ((layer)&0x1F))
+#define QK_TO_GET_LAYER(kc) ((kc)&0x1F)
 
-// Momentary switch layer - 256 layer max
-#define MO(layer) (layer | QK_MOMENTARY)
+// Momentary switch layer - 32 layer max
+#define MO(layer) (QK_MOMENTARY | ((layer)&0x1F))
+#define QK_MOMENTARY_GET_LAYER(kc) ((kc)&0x1F)
 
-// Set default layer - 256 layer max
-#define DF(layer) (layer | QK_DEF_LAYER)
+// Set default layer - 32 layer max
+#define DF(layer) (QK_DEF_LAYER | ((layer)&0x1F))
+#define QK_DEF_LAYER_GET_LAYER(kc) ((kc)&0x1F)
 
-// Toggle to layer - 256 layer max
-#define TG(layer) (layer | QK_TOGGLE_LAYER)
+// Toggle to layer - 32 layer max
+#define TG(layer) (QK_TOGGLE_LAYER | ((layer)&0x1F))
+#define QK_TOGGLE_LAYER_GET_LAYER(kc) ((kc)&0x1F)
 
-// One-shot layer - 256 layer max
-#define OSL(layer) (layer | QK_ONE_SHOT_LAYER)
+// One-shot layer - 32 layer max
+#define OSL(layer) (QK_ONE_SHOT_LAYER | ((layer)&0x1F))
+#define QK_ONE_SHOT_LAYER_GET_LAYER(kc) ((kc)&0x1F)
 
-// L-ayer M-od: Momentary switch layer with modifiers active - 16 layer max, left mods only
-#define LM(layer, mod) (QK_LAYER_MOD | (((layer) & 0xF) << 4) | ((mod) & 0xF))
+// L-ayer M-od: Momentary switch layer with modifiers active - 16 layer max
+#define LM(layer, mod) (QK_LAYER_MOD | (((layer)&0xF) << 5) | ((mod)&0x1F))
+#define QK_LAYER_MOD_GET_LAYER(kc) (((kc) >> 5) & 0xF)
+#define QK_LAYER_MOD_GET_MODS(kc) ((kc)&0x1F)
 
 // One-shot mod
 #define OSM(mod) ((mod) | QK_ONE_SHOT_MOD)

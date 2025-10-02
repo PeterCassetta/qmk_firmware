@@ -26,7 +26,17 @@ These functions allow you to activate layers in various ways.
 * `TG(layer)` - toggles a layer on or off.
 * `TO(layer)` - Goes to a layer. This code is special, because it lets you go either up or down the stack -- just goes directly to the layer you want. So while other codes only let you go _up_ the stack (from layer 0 to layer 3, for example), `TO(2)` is going to get you to layer 2, no matter where you activate it from -- even if you're currently on layer 5. This gets activated on keydown (as soon as the key is pressed).
 * `TT(layer)` - Layer Tap-Toggle. If you hold the key down, the layer becomes active, and then deactivates when you let go. And if you repeatedly tap it, the layer simply becomes active (toggles on). It needs 5 taps by default, but you can set it by defining `TAPPING_TOGGLE`, for example, `#define TAPPING_TOGGLE 2` for just two taps.
-* `LM(layer, mod)` - Momentary switch to *layer* (like MO), but with modifier(s) *mod* active. Only supports layers 0-15 and the left modifiers.
+* `LM(layer, mod)` - Momentarily activates *layer* (like `MO`), but with modifier(s) *mod* active. Only supports layers 0-15. The modifiers this keycode accept are prefixed with `MOD_`, not `KC_`. These modifiers can be combined using bitwise OR, e.g. `LM(_RAISE, MOD_LCTL | MOD_LALT)`.
+
+Currently, the `layer` argument of `LT()` is limited to layers 0-15, and the `kc` argument to the [Basic Keycode set](keycodes_basic.md), meaning you can't use keycodes like `LCTL()`, `KC_TILD`, or anything greater than `0xFF`. This is because QMK uses 16-bit keycodes, of which 4 bits are used for the function identifier and 4 bits for the layer, leaving only 8 bits for the keycode.
+
+For a similar reason, the `layer` argument of `LM()` is also limited to layers 0-15 and the `mod` argument must fit within 5 bits. As a consequence, although left and right modifiers are supported by `LM()`, it is impossible to mix and match left and right modifiers. Specifying at least one right-hand modifier in a combination such as `MOD_RALT|MOD_LSFT` will convert *all* the listed modifiers to their right-hand counterpart. So, using the aforementioned mod-mask will actually send <kbd>Right Alt</kbd>+<kbd>Right Shift</kbd>. Make sure to use the `MOD_xxx` constants over alternative ways of specifying modifiers when defining your layer-mod key.
+
+| `LM(1,KC_LSFT)` | `LM(1,MOD_MASK_SHIFT)` | `LM(1,MOD_BIT(KC_LSFT))` | `LM(1,MOD_LSFT)` |
+|:---------------:|:----------------------:|:------------------------:|:----------------:|
+|       ❌        |          ❌            |           ❌             |        ✅        |
+
+Expanding this would be complicated, at best. Moving to a 32-bit keycode would solve a lot of this, but would double the amount of space that the keymap matrix uses. And it could potentially cause issues, too. If you need to apply modifiers to your tapped keycode, [Tap Dance](feature_tap_dance.md#example-5-using-tap-dance-for-advanced-mod-tap-and-layer-tap-keys) can be used to accomplish this.
 
 # Working with Layers
 

@@ -47,7 +47,7 @@ action_t action_for_key(uint8_t layer, keypos_t key)
     keycode = keycode_config(keycode);
 
     action_t action;
-    uint8_t action_layer, when, mod;
+    uint8_t action_layer, mod;
 
     switch (keycode) {
         case KC_FN0 ... KC_FN31:
@@ -90,28 +90,27 @@ action_t action_for_key(uint8_t layer, keypos_t key)
             break;
         case QK_TO ... QK_TO_MAX: ;
             // Layer set "GOTO"
-            when = (keycode >> 0x4) & 0x3;
-            action_layer = keycode & 0xF;
-            action.code = ACTION_LAYER_SET(action_layer, when);
+            action_layer = QK_TO_GET_LAYER(keycode);
+            action.code  = ACTION_LAYER_GOTO(action_layer);
             break;
         case QK_MOMENTARY ... QK_MOMENTARY_MAX: ;
             // Momentary action_layer
-            action_layer = keycode & 0xFF;
+            action_layer = QK_MOMENTARY_GET_LAYER(keycode);
             action.code = ACTION_LAYER_MOMENTARY(action_layer);
             break;
         case QK_DEF_LAYER ... QK_DEF_LAYER_MAX: ;
             // Set default action_layer
-            action_layer = keycode & 0xFF;
+            action_layer = QK_DEF_LAYER_GET_LAYER(keycode);
             action.code = ACTION_DEFAULT_LAYER_SET(action_layer);
             break;
         case QK_TOGGLE_LAYER ... QK_TOGGLE_LAYER_MAX: ;
             // Set toggle
-            action_layer = keycode & 0xFF;
+            action_layer = QK_TOGGLE_LAYER_GET_LAYER(keycode);
             action.code = ACTION_LAYER_TOGGLE(action_layer);
             break;
         case QK_ONE_SHOT_LAYER ... QK_ONE_SHOT_LAYER_MAX: ;
             // OSL(action_layer) - One-shot action_layer
-            action_layer = keycode & 0xFF;
+            action_layer = QK_ONE_SHOT_LAYER_GET_LAYER(keycode);
             action.code = ACTION_LAYER_ONESHOT(action_layer);
             break;
         case QK_ONE_SHOT_MOD ... QK_ONE_SHOT_MOD_MAX: ;
@@ -123,8 +122,8 @@ action_t action_for_key(uint8_t layer, keypos_t key)
             action.code = ACTION_LAYER_TAP_TOGGLE(keycode & 0xFF);
             break;
         case QK_LAYER_MOD ... QK_LAYER_MOD_MAX:
-            mod = keycode & 0xF;
-            action_layer = (keycode >> 4) & 0xF;
+            mod          = mod_config(QK_LAYER_MOD_GET_MODS(keycode));
+            action_layer = QK_LAYER_MOD_GET_LAYER(keycode);
             action.code = ACTION_LAYER_MODS(action_layer, mod);
             break;
         case QK_MOD_TAP ... QK_MOD_TAP_MAX:
