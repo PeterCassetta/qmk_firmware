@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef COMMAND_H
-#define COMMAND
+#define COMMAND_H
 
 /* FIXME: Add doxygen comments for the behavioral defines in here. */
 
